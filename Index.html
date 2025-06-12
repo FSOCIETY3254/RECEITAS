@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>FSOCIETY CORPORATION</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: #00ff00;
+      font-family: monospace;
+      overflow: hidden;
+    }
+
+    .matrix {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .content {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    video {
+      max-width: 80%;
+      height: auto;
+      border: 3px solid #00ff00;
+      box-shadow: 0 0 20px #00ff00;
+    }
+
+    button {
+      background-color: #000;
+      color: #00ff00;
+      border: 2px solid #00ff00;
+      padding: 10px 20px;
+      margin-top: 20px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #00ff00;
+      color: #000;
+    }
+
+    .recipe-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: black;
+      color: #00ff00;
+      width: 100%;
+      height: 100%;
+      padding: 40px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      font-size: 20px;
+    }
+
+    .recipe-screen h2 {
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <canvas class="matrix" id="matrixCanvas"></canvas>
+
+  <div class="content" id="mainContent">
+    <h1>FSOCIETY CORPORATION</h1>
+    <video id="video" controls>
+      <source src="PROVA.mp4" type="video/mp4" />
+      Seu navegador não suporta o vídeo :(
+    </video>
+    <button onclick="mostrarReceita()">Ver Receita de Bolo</button>
+  </div>
+
+  <div class="recipe-screen" id="receita">
+    <h2>Receita de Bolo de Chocolate</h2>
+    <p>Ingredientes:</p>
+    <ul>
+      <li>2 ovos</li>
+      <li>1 xícara de leite</li>
+      <li>3 colheres de manteiga</li>
+      <li>2 xícaras de farinha de trigo</li>
+      <li>1 xícara de açúcar</li>
+      <li>1 xícara de chocolate em pó</li>
+      <li>1 colher de fermento</li>
+    </ul>
+    <p>Modo de preparo: Misture tudo, coloque em forma untada e leve ao forno médio por 40 minutos.</p>
+    <button onclick="voltarSite()">Voltar ao Site</button>
+  </div>
+
+  <script>
+    // Matrix animation
+    const canvas = document.getElementById("matrixCanvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array.from({ length: columns }).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#0F0";
+      ctx.font = fontSize + "px monospace";
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        drops[i] = drops[i] * fontSize > canvas.height || Math.random() > 0.95 ? 0 : drops[i] + 1;
+      }
+    }
+    setInterval(drawMatrix, 33);
+
+    // Funções para trocar de tela
+    function mostrarReceita() {
+      document.getElementById("mainContent").style.display = "none";
+      document.getElementById("receita").style.display = "flex";
+    }
+
+    function voltarSite() {
+      document.getElementById("receita").style.display = "none";
+      document.getElementById("mainContent").style.display = "flex";
+    }
+  </script>
+</body>
+</html>
