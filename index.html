@@ -117,25 +117,22 @@
     background-color: #00e6b8;
   }
 
-  /* MODO CAMUFLAGEM FOTO */
+  /* MODO CAMUFLAGEM FULLSCREEN */
   #camuflagem {
     display: none;
-    background-color: #f0f0f0;
     width: 100vw;
     height: 100vh;
+    overflow: hidden;
+    margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    overflow-y: auto;
     text-align: center;
+    background-color: #000;
   }
 
   #camuflagem img {
     width: 100%;
-    max-width: 900px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    display: block;
-    margin: 40px auto;
+    height: 100%;
+    object-fit: cover; /* Preenche toda a tela mantendo proporção */
   }
 
   #voltar {
@@ -188,9 +185,9 @@
     <button onclick="ativarCamuflagem()">Modo Camuflagem</button>
   </div>
 
-  <!-- MODO CAMUFLAGEM FOTO -->
+  <!-- MODO CAMUFLAGEM FULLSCREEN -->
   <div id="camuflagem">
-    <img src="FSOCIETY.png" alt="Camuflagem">
+    <img src="FSOCIETY.webp" alt="Camuflagem">
     <button id="voltar" onclick="desativarCamuflagem()">Voltar</button>
   </div>
 
@@ -266,7 +263,7 @@
     });
 
     function ativarCamuflagem() {
-      document.body.style.backgroundColor = "#f0f0f0";
+      document.body.style.backgroundColor = "#000";
       videoContainer.style.display = "none";
       terminal.style.display = "none";
       camuflagem.style.display = "block";
