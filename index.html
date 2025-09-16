@@ -120,19 +120,14 @@
   /* MODO CAMUFLAGEM FULLSCREEN */
   #camuflagem {
     display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100vw;
     height: 100vh;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    background-color: #000;
-  }
-
-  #camuflagem img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Preenche toda a tela mantendo proporção */
+    background: url('FSOCIETY.webp') no-repeat center center;
+    background-size: cover;
+    z-index: 999;
   }
 
   #voltar {
@@ -146,7 +141,7 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    z-index: 10;
+    z-index: 1000; /* acima da imagem */
   }
 
   #voltar:hover {
@@ -187,7 +182,6 @@
 
   <!-- MODO CAMUFLAGEM FULLSCREEN -->
   <div id="camuflagem">
-    <img src="FSOCIETY.webp" alt="Camuflagem">
     <button id="voltar" onclick="desativarCamuflagem()">Voltar</button>
   </div>
 
@@ -296,7 +290,7 @@
         pisca++;
         if (pisca > 5) {
           clearInterval(piscarInterval);
-          mascote.style.color = '#00ffcc'; // cor original
+          mascote.style.color = '#00ffcc';
           efeitoAtivo = false;
         }
       }, 50);
@@ -331,7 +325,6 @@
     }
 
     moverMascote();
-
     window.onload = () => commandInput.focus();
   </script>
 </body>
