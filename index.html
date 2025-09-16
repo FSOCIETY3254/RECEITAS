@@ -1,145 +1,411 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>FSOCIETY CORPORATION</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: black;
-      color: #00ff00;
-      font-family: monospace;
-      overflow: hidden;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Terminal Interativo Fsociety</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
-    .matrix {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
+  body {
+    margin: 0;
+    height: 100vh;
+    background: url('fsociety.webp') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Share Tech Mono', monospace;
+    color: #00ffcc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    overflow: hidden;
+  }
 
-    .content {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
+  #terminal {
+    max-width: 40vw;
+    min-width: 320px;
+    height: 70vh;
+    background: rgba(0, 0, 0, 0.7);
+    border-left: 4px solid #00ffcc;
+    padding: 20px;
+    box-sizing: border-box;
+    font-size: 1.1rem;
+    white-space: pre-wrap;
+    overflow-y: auto;
+    box-shadow: 0 0 15px #00ffccaa;
+    border-radius: 8px;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
 
-    video {
-      max-width: 80%;
-      height: auto;
-      border: 3px solid #00ff00;
-      box-shadow: 0 0 20px #00ff00;
-    }
+  #output {
+    flex-grow: 1;
+    overflow-y: auto;
+  }
 
-    button {
-      background-color: #000;
-      color: #00ff00;
-      border: 2px solid #00ff00;
-      padding: 10px 20px;
-      margin-top: 20px;
-      cursor: pointer;
-      font-size: 18px;
-      transition: 0.3s;
-    }
+  #input-line {
+    display: flex;
+    align-items: center;
+  }
 
-    button:hover {
-      background-color: #00ff00;
-      color: #000;
-    }
+  #prompt {
+    margin-right: 10px;
+    user-select: none;
+  }
 
-    .recipe-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      background-color: black;
-      color: #00ff00;
-      width: 100%;
-      height: 100%;
-      padding: 40px;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      font-size: 20px;
-    }
+  #command-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #00ffcc;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.1rem;
+    flex-grow: 1;
+  }
 
-    .recipe-screen h2 {
-      margin-bottom: 20px;
-      text-transform: uppercase;
-    }
-  </style>
+  #command-input::placeholder {
+    color: #006655;
+  }
+
+  #videoContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 35vw;
+    max-width: 400px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 30px #00ffcccc;
+    user-select: none;
+  }
+
+  #videoContainer h1 {
+    margin: 0 0 15px;
+    font-size: 2rem;
+    color: #00ffcc;
+    text-shadow: 0 0 10px #00ffcc;
+    user-select: none;
+  }
+
+  #videoContainer video {
+    width: 250px;
+    border: 2px solid #00ffcc;
+    border-radius: 8px;
+    box-shadow: 0 0 20px #00ffcc;
+    background: black;
+    user-select: none;
+    pointer-events: auto;
+  }
+
+  button {
+    background-color: #00ffcc;
+    color: #000;
+    font-family: 'Share Tech Mono', monospace;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 20px;
+    user-select: none;
+  }
+
+  button:hover {
+    background-color: #00e6b8;
+  }
+
+  /* MODO CAMUFLAGEM */
+  #camuflagem {
+    display: none;
+    background-color: #f0f0f0;
+    color: #333;
+    font-family: Arial, sans-serif;
+    width: 100vw;
+    height: 100vh;
+    padding: 40px;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+
+  #camuflagem h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #2c3e50;
+  }
+
+  #camuflagem table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-bottom: 30px;
+  }
+
+  #camuflagem th, #camuflagem td {
+    padding: 12px;
+    border: 1px solid #ccc;
+    text-align: left;
+  }
+
+  #camuflagem th {
+    background-color: #eaeaea;
+  }
+
+  .grafico h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .barra {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .barra label {
+    width: 120px;
+    font-weight: bold;
+  }
+
+  .barra div {
+    height: 20px;
+    background-color: #3498db;
+    border-radius: 4px;
+    box-shadow: 0 0 5px #aaa;
+    transition: width 0.4s ease;
+  }
+
+  #voltar {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #222;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  #voltar:hover {
+    background-color: #444;
+  }
+
+  /* MASCOTE ANIMADO */
+  #mascote {
+    position: fixed;
+    font-size: 48px;
+    color: #00ffcc;
+    z-index: 9999;
+    pointer-events: none;
+    top: 50px;
+    left: 50px;
+    user-select: none;
+    transition: transform 0.1s ease;
+  }
+</style>
 </head>
 <body>
-  <canvas class="matrix" id="matrixCanvas"></canvas>
+  <div id="terminal">
+    <div id="output"></div>
+    <div id="input-line">
+      <span id="prompt">root@fsociety:~$</span>
+      <input id="command-input" type="text" autocomplete="off" autofocus placeholder="Digite comando..." />
+    </div>
+  </div>
 
-  <div class="content" id="mainContent">
-    <h1>FSOCIETY CORPORATION</h1>
-    <video id="video" controls>
+  <div id="videoContainer">
+    <h1>~ PROVA.mp4 ~</h1>
+    <video controls autoplay muted loop
+           style="width: 250px; border: 2px solid #00ffcc; border-radius: 8px; box-shadow: 0 0 20px #00ffcc; background: black; user-select: none; pointer-events: auto;">
       <source src="PROVA.mp4" type="video/mp4" />
-      Seu navegador não suporta o vídeo :(
+      Seu navegador não suporta a reprodução de vídeo.
     </video>
-    <button onclick="mostrarReceita()">Ver Receita de Bolo</button>
+    <button onclick="ativarCamuflagem()">Modo Camuflagem</button>
   </div>
 
-  <div class="recipe-screen" id="receita">
-    <h2>Receita de Bolo de Chocolate</h2>
-    <p>Ingredientes:</p>
-    <ul>
-      <li>2 ovos</li>
-      <li>1 xícara de leite</li>
-      <li>3 colheres de manteiga</li>
-      <li>2 xícaras de farinha de trigo</li>
-      <li>1 xícara de açúcar</li>
-      <li>1 xícara de chocolate em pó</li>
-      <li>1 colher de fermento</li>
-    </ul>
-    <p>Modo de preparo: Misture tudo, coloque em forma untada e leve ao forno médio por 40 minutos.</p>
-    <button onclick="voltarSite()">Voltar ao Site</button>
+  <!-- MODO CAMUFLAGEM -->
+  <div id="camuflagem">
+    <h2>Painel de Desempenho - Turma 2B</h2>
+    <p>Dados referentes à participação e nota parcial dos alunos no 2º bimestre.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Aluno</th>
+          <th>Frequência</th>
+          <th>Nota</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Ana Silva</td><td>96%</td><td>8.7</td><td>Aprovado</td></tr>
+        <tr><td>Lucas Souza</td><td>89%</td><td>7.5</td><td>Aprovado</td></tr>
+        <tr><td>Fernanda Lima</td><td>78%</td><td>6.3</td><td>Recuperação</td></tr>
+        <tr><td>João Pedro</td><td>65%</td><td>5.9</td><td>Recuperação</td></tr>
+        <tr><td>Rafael Costa</td><td>52%</td><td>4.2</td><td>Reprovado</td></tr>
+      </tbody>
+    </table>
+
+    <div class="grafico">
+      <h3>Desempenho da Turma</h3>
+      <div class="barra"><label>Aprovados</label><div style="width: 60%"></div></div>
+      <div class="barra"><label>Recuperação</label><div style="width: 25%"></div></div>
+      <div class="barra"><label>Reprovados</label><div style="width: 15%"></div></div>
+    </div>
+
+    <button id="voltar" onclick="desativarCamuflagem()">Voltar</button>
   </div>
+
+  <!-- MASCOTE ANIMADO -->
+  <div id="mascote">💀</div>
 
   <script>
-    // Matrix animation
-    const canvas = document.getElementById("matrixCanvas");
-    const ctx = canvas.getContext("2d");
+    const terminal = document.getElementById('terminal');
+    const output = document.getElementById('output');
+    const commandInput = document.getElementById('command-input');
+    const videoContainer = document.getElementById('videoContainer');
+    const camuflagem = document.getElementById('camuflagem');
 
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
+    function escreveTexto(text, callback) {
+      let i = 0;
+      function passo() {
+        if(i < text.length){
+          output.textContent += text[i];
+          i++;
+          output.scrollTop = output.scrollHeight;
+          setTimeout(passo, 20);
+        } else {
+          output.textContent += '\n';
+          output.scrollTop = output.scrollHeight;
+          if(callback) callback();
+        }
+      }
+      passo();
+    }
 
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%";
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = Array.from({ length: columns }).fill(1);
+    function processarComando(cmd) {
+      cmd = cmd.trim().toUpperCase();
 
-    function drawMatrix() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#0F0";
-      ctx.font = fontSize + "px monospace";
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters.charAt(Math.floor(Math.random() * letters.length));
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        drops[i] = drops[i] * fontSize > canvas.height || Math.random() > 0.95 ? 0 : drops[i] + 1;
+      escreveTexto(`root@fsociety:~$ ${cmd}`);
+
+      if(cmd === "NMAP"){
+        escreveTexto("Starting Nmap 7.91 ( https://nmap.org ) at 2025-06-19 23:00");
+        escreveTexto("Nmap scan report for 192.168.1.1");
+        escreveTexto("Host is up (0.0020s latency).");
+        escreveTexto("Not shown: 998 closed ports");
+        escreveTexto("PORT     STATE SERVICE");
+        escreveTexto("22/tcp   open  ssh");
+        escreveTexto("80/tcp   open  http");
+        escreveTexto("MAC Address: 00:0C:29:68:22:33 (VMware)");
+        escreveTexto("Nmap done: 1 IP address (1 host up) scanned in 0.42 seconds");
+      }
+      else if(cmd === "HELP"){
+        escreveTexto("Comandos disponíveis: NMAP, HELP, CLEAR, EXIT");
+      }
+      else if(cmd === "CLEAR"){
+        output.textContent = "";
+      }
+      else if(cmd === "EXIT"){
+        escreveTexto("Saindo do terminal...");
+        setTimeout(() => {
+          ativarCamuflagem();
+          commandInput.value = "";
+        }, 1000);
+      }
+      else {
+        escreveTexto(`Comando não reconhecido: ${cmd}`);
       }
     }
-    setInterval(drawMatrix, 33);
 
-    // Funções para trocar de tela
-    function mostrarReceita() {
-      document.getElementById("mainContent").style.display = "none";
-      document.getElementById("receita").style.display = "flex";
+    commandInput.addEventListener("keydown", function(e){
+      if(e.key === "Enter"){
+        e.preventDefault();
+        const comando = commandInput.value;
+        if(comando.trim() !== ""){
+          processarComando(comando);
+          commandInput.value = "";
+        }
+      }
+    });
+
+    function ativarCamuflagem() {
+      document.body.style.backgroundColor = "#f0f0f0";
+      videoContainer.style.display = "none";
+      terminal.style.display = "none";
+      camuflagem.style.display = "block";
     }
 
-    function voltarSite() {
-      document.getElementById("receita").style.display = "none";
-      document.getElementById("mainContent").style.display = "flex";
+    function desativarCamuflagem() {
+      document.body.style.backgroundColor = "";
+      camuflagem.style.display = "none";
+      videoContainer.style.display = "flex";
+      terminal.style.display = "flex";
+      commandInput.focus();
     }
+
+    // Mascote animado flutuante (💀) com efeito glitch nas bordas
+    const mascote = document.getElementById("mascote");
+
+    let x = 50;
+    let y = 50;
+    let dx = 2;
+    let dy = 1.5;
+    let efeitoAtivo = false;
+
+    function piscarGlitch() {
+      if (efeitoAtivo) return;
+      efeitoAtivo = true;
+
+      let pisca = 0;
+      const piscarInterval = setInterval(() => {
+        mascote.style.color = pisca % 2 === 0 ? 'red' : 'white';
+        pisca++;
+        if (pisca > 5) {
+          clearInterval(piscarInterval);
+          mascote.style.color = '#00ffcc'; // cor original
+          efeitoAtivo = false;
+        }
+      }, 50);
+    }
+
+    function moverMascote() {
+      const largura = window.innerWidth;
+      const altura = window.innerHeight;
+
+      x += dx;
+      y += dy;
+
+      let bateuBorda = false;
+
+      if (x + 48 >= largura || x <= 0) {
+        dx *= -1;
+        bateuBorda = true;
+      }
+      if (y + 48 >= altura || y <= 0) {
+        dy *= -1;
+        bateuBorda = true;
+      }
+
+      if (bateuBorda) piscarGlitch();
+
+      mascote.style.left = x + "px";
+      mascote.style.top = y + "px";
+
+      // Flip horizontal quando muda de direção
+      mascote.style.transform = `scaleX(${dx > 0 ? 1 : -1})`;
+
+      requestAnimationFrame(moverMascote);
+    }
+
+    moverMascote();
+
+    // Foco automático no input ao carregar e voltar da camuflagem
+    window.onload = () => commandInput.focus();
   </script>
 </body>
 </html>
