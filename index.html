@@ -117,64 +117,25 @@
     background-color: #00e6b8;
   }
 
-  /* MODO CAMUFLAGEM */
+  /* MODO CAMUFLAGEM FOTO */
   #camuflagem {
     display: none;
     background-color: #f0f0f0;
-    color: #333;
-    font-family: Arial, sans-serif;
     width: 100vw;
     height: 100vh;
-    padding: 40px;
+    padding: 0;
     box-sizing: border-box;
     overflow-y: auto;
+    text-align: center;
   }
 
-  #camuflagem h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
-    color: #2c3e50;
-  }
-
-  #camuflagem table {
+  #camuflagem img {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    margin-bottom: 30px;
-  }
-
-  #camuflagem th, #camuflagem td {
-    padding: 12px;
+    max-width: 900px;
     border: 1px solid #ccc;
-    text-align: left;
-  }
-
-  #camuflagem th {
-    background-color: #eaeaea;
-  }
-
-  .grafico h3 {
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-
-  .barra {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-
-  .barra label {
-    width: 120px;
-    font-weight: bold;
-  }
-
-  .barra div {
-    height: 20px;
-    background-color: #3498db;
-    border-radius: 4px;
-    box-shadow: 0 0 5px #aaa;
-    transition: width 0.4s ease;
+    border-radius: 8px;
+    display: block;
+    margin: 40px auto;
   }
 
   #voltar {
@@ -220,44 +181,16 @@
 
   <div id="videoContainer">
     <h1>~ PROVA.mp4 ~</h1>
-    <video controls autoplay muted loop
-           style="width: 250px; border: 2px solid #00ffcc; border-radius: 8px; box-shadow: 0 0 20px #00ffcc; background: black; user-select: none; pointer-events: auto;">
+    <video controls autoplay muted loop>
       <source src="PROVA.mp4" type="video/mp4" />
       Seu navegador não suporta a reprodução de vídeo.
     </video>
     <button onclick="ativarCamuflagem()">Modo Camuflagem</button>
   </div>
 
-  <!-- MODO CAMUFLAGEM -->
+  <!-- MODO CAMUFLAGEM FOTO -->
   <div id="camuflagem">
-    <h2>Painel de Desempenho - Turma 2B</h2>
-    <p>Dados referentes à participação e nota parcial dos alunos no 2º bimestre.</p>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Aluno</th>
-          <th>Frequência</th>
-          <th>Nota</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Ana Silva</td><td>96%</td><td>8.7</td><td>Aprovado</td></tr>
-        <tr><td>Lucas Souza</td><td>89%</td><td>7.5</td><td>Aprovado</td></tr>
-        <tr><td>Fernanda Lima</td><td>78%</td><td>6.3</td><td>Recuperação</td></tr>
-        <tr><td>João Pedro</td><td>65%</td><td>5.9</td><td>Recuperação</td></tr>
-        <tr><td>Rafael Costa</td><td>52%</td><td>4.2</td><td>Reprovado</td></tr>
-      </tbody>
-    </table>
-
-    <div class="grafico">
-      <h3>Desempenho da Turma</h3>
-      <div class="barra"><label>Aprovados</label><div style="width: 60%"></div></div>
-      <div class="barra"><label>Recuperação</label><div style="width: 25%"></div></div>
-      <div class="barra"><label>Reprovados</label><div style="width: 15%"></div></div>
-    </div>
-
+    <img src="FSOCIETY.png" alt="Camuflagem">
     <button id="voltar" onclick="desativarCamuflagem()">Voltar</button>
   </div>
 
@@ -290,7 +223,6 @@
 
     function processarComando(cmd) {
       cmd = cmd.trim().toUpperCase();
-
       escreveTexto(`root@fsociety:~$ ${cmd}`);
 
       if(cmd === "NMAP"){
@@ -396,7 +328,6 @@
       mascote.style.left = x + "px";
       mascote.style.top = y + "px";
 
-      // Flip horizontal quando muda de direção
       mascote.style.transform = `scaleX(${dx > 0 ? 1 : -1})`;
 
       requestAnimationFrame(moverMascote);
@@ -404,7 +335,6 @@
 
     moverMascote();
 
-    // Foco automático no input ao carregar e voltar da camuflagem
     window.onload = () => commandInput.focus();
   </script>
 </body>
