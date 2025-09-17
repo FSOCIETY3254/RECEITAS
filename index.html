@@ -1,228 +1,180 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Terminal Interativo Fsociety</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
+  :root{ --neon:#00ffcc; --bg-rad: #000000aa; }
+
+  html,body{ height:100%; margin:0; font-family:'Share Tech Mono',monospace; }
+
   body {
-    margin: 0;
-    height: 100vh;
     background: url('fsociety.webp') no-repeat center center fixed;
     background-size: cover;
-    font-family: 'Share Tech Mono', monospace;
-    color: #00ffcc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 30px;
-    overflow: hidden;
+    color: var(--neon);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:30px;
+    overflow:hidden;
   }
 
-  #terminal {
-    max-width: 40vw;
-    min-width: 320px;
-    height: 70vh;
-    background: rgba(0, 0, 0, 0.7);
-    border-left: 4px solid #00ffcc;
-    padding: 20px;
-    box-sizing: border-box;
-    font-size: 1.1rem;
-    white-space: pre-wrap;
-    overflow-y: auto;
-    box-shadow: 0 0 15px #00ffccaa;
-    border-radius: 8px;
-    user-select: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+  /* Terminal */
+  #terminal{
+    max-width:40vw;
+    min-width:320px;
+    height:70vh;
+    background: rgba(0,0,0,0.75);
+    border-left:4px solid var(--neon);
+    padding:20px;
+    box-sizing:border-box;
+    font-size:1.05rem;
+    white-space:pre-wrap;
+    overflow-y:auto;
+    box-shadow:0 0 15px #00ffcc66;
+    border-radius:8px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    user-select:none;
+  }
+  #output{ flex-grow:1; overflow-y:auto; }
+  #input-line{ display:flex; align-items:center; }
+  #prompt{ margin-right:10px; user-select:none; }
+  #command-input{
+    background:transparent; border:none; outline:none;
+    color:var(--neon); font-family:inherit; font-size:1.05rem; flex-grow:1;
+  }
+  #command-input::placeholder{ color:#006655; }
+
+  /* Video container */
+  #videoContainer{
+    display:flex; flex-direction:column; align-items:center;
+    width:35vw; max-width:400px; background:rgba(0,0,0,0.6);
+    padding:20px; border-radius:10px; box-shadow:0 0 30px #00ffcc66;
+  }
+  #videoContainer h1{ margin:0 0 12px; font-size:1.6rem; color:var(--neon); text-shadow:0 0 8px var(--neon); }
+  #videoContainer video{ width:250px; border:2px solid var(--neon); border-radius:8px; background:#000; }
+
+  button{
+    background-color:var(--neon); color:#000; font-family:inherit;
+    border:none; padding:8px 14px; border-radius:5px; cursor:pointer; margin-top:16px;
+  }
+  button:hover{ filter:brightness(0.95); }
+
+  /* Camuflagem fullscreen (background image) */
+  #camuflagem{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:1200;
+    background: center center no-repeat;
+    background-size:cover;
+    background-color:#fff; /* fallback */
+  }
+  /* botão voltar sobreposto, discreto */
+  #voltar{
+    position:fixed;
+    top:12px;
+    right:12px;
+    z-index:1300;
+    background:#f0f0f0;
+    color:#222;
+    font-family:Arial, sans-serif;
+    padding:6px 10px;
+    border-radius:4px;
+    border:1px solid #d0d0d0;
+    cursor:pointer;
+  }
+  #voltar:hover{ background:#e6e6e6; }
+
+  /* Mascote */
+  #mascote{
+    position:fixed;
+    top:50px; left:50px;
+    font-size:48px; color:var(--neon); z-index:1400;
+    pointer-events:none; user-select:none; transition:opacity .2s ease;
+    filter:drop-shadow(0 0 6px rgba(0,255,204,0.35));
   }
 
-  #output {
-    flex-grow: 1;
-    overflow-y: auto;
-  }
-
-  #input-line {
-    display: flex;
-    align-items: center;
-  }
-
-  #prompt {
-    margin-right: 10px;
-    user-select: none;
-  }
-
-  #command-input {
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #00ffcc;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 1.1rem;
-    flex-grow: 1;
-  }
-
-  #command-input::placeholder {
-    color: #006655;
-  }
-
-  #videoContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 35vw;
-    max-width: 400px;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 30px #00ffcccc;
-    user-select: none;
-  }
-
-  #videoContainer h1 {
-    margin: 0 0 15px;
-    font-size: 2rem;
-    color: #00ffcc;
-    text-shadow: 0 0 10px #00ffcc;
-    user-select: none;
-  }
-
-  #videoContainer video {
-    width: 250px;
-    border: 2px solid #00ffcc;
-    border-radius: 8px;
-    box-shadow: 0 0 20px #00ffcc;
-    background: black;
-    user-select: none;
-    pointer-events: auto;
-  }
-
-  button {
-    background-color: #00ffcc;
-    color: #000;
-    font-family: 'Share Tech Mono', monospace;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.2s;
-    margin-top: 20px;
-    user-select: none;
-  }
-
-  button:hover {
-    background-color: #00e6b8;
-  }
-
-  /* MODO CAMUFLAGEM FULLSCREEN */
-  #camuflagem {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    z-index: 999;
-  }
-
-  #camuflagem img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* preenche toda a tela mantendo proporção */
-  }
-
-  #voltar {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #222;
-    color: #fff;
-    font-family: Arial, sans-serif;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    z-index: 1000; /* acima da imagem */
-  }
-
-  #voltar:hover {
-    background-color: #444;
-  }
-
-  /* MASCOTE ANIMADO */
-  #mascote {
-    position: fixed;
-    font-size: 48px;
-    color: #00ffcc;
-    z-index: 9999;
-    pointer-events: none;
-    top: 50px;
-    left: 50px;
-    user-select: none;
-    transition: transform 0.1s ease;
+  /* Responsividade */
+  @media (max-width:900px){
+    #terminal{ max-width:60vw; height:55vh; }
+    #videoContainer{ display:none; } /* esconde video em mobile pra caber */
   }
 </style>
 </head>
 <body>
-  <div id="terminal">
+  <!-- Terminal -->
+  <div id="terminal" aria-label="Terminal interativo">
     <div id="output"></div>
     <div id="input-line">
       <span id="prompt">root@fsociety:~$</span>
-      <input id="command-input" type="text" autocomplete="off" autofocus placeholder="Digite comando..." />
+      <input id="command-input" type="text" autocomplete="off" placeholder="Digite comando..." />
     </div>
   </div>
 
-  <div id="videoContainer">
+  <!-- Vídeo -->
+  <div id="videoContainer" aria-label="Player de prova">
     <h1>~ PROVA.mp4 ~</h1>
     <video controls autoplay muted loop>
       <source src="PROVA.mp4" type="video/mp4" />
-      Seu navegador não suporta a reprodução de vídeo.
+      Seu navegador não suporta vídeo.
     </video>
-    <button onclick="ativarCamuflagem()">Modo Camuflagem</button>
+    <button id="botao-camuflagem">Modo Camuflagem</button>
   </div>
 
-  <!-- MODO CAMUFLAGEM FULLSCREEN -->
-  <div id="camuflagem">
-    <img src="FUTURO.webp" alt="FUTURO" />
-    <button id="voltar" onclick="desativarCamuflagem()">Voltar</button>
-  </div>
+  <!-- Camuflagem fullscreen usando imagem FUTURO.webp -->
+  <div id="camuflagem" aria-hidden="true" role="dialog" aria-label="Camuflagem"></div>
+  <button id="voltar" style="display:none">Voltar</button>
 
-  <!-- MASCOTE ANIMADO -->
+  <!-- Mascote -->
   <div id="mascote">💀</div>
 
-  <script>
-    const terminal = document.getElementById('terminal');
-    const output = document.getElementById('output');
-    const commandInput = document.getElementById('command-input');
-    const videoContainer = document.getElementById('videoContainer');
-    const camuflagem = document.getElementById('camuflagem');
+<script>
+  // Elementos
+  const terminal = document.getElementById('terminal');
+  const output = document.getElementById('output');
+  const input = document.getElementById('command-input');
+  const videoContainer = document.getElementById('videoContainer');
+  const camuflagem = document.getElementById('camuflagem');
+  const botaoCamuflagem = document.getElementById('botao-camuflagem');
+  const botaoVoltar = document.getElementById('voltar');
+  const mascote = document.getElementById('mascote');
 
-    function escreveTexto(text, callback) {
-      let i = 0;
-      function passo() {
-        if(i < text.length){
-          output.textContent += text[i];
-          i++;
-          output.scrollTop = output.scrollHeight;
-          setTimeout(passo, 20);
-        } else {
-          output.textContent += '\n';
-          output.scrollTop = output.scrollHeight;
-          if(callback) callback();
-        }
+  // Nome da imagem de camuflagem — altere aqui se necessário
+  const CAMUFLAGEM_IMG = 'FUTURO.webp';
+
+  // Inicializa background da camuflagem
+  camuflagem.style.backgroundImage = `url('${CAMUFLAGEM_IMG}')`;
+
+  // Função que escreve com efeito no terminal
+  function escreveTexto(text, cb){
+    let i = 0;
+    function step(){
+      if(i < text.length){
+        output.textContent += text[i++];
+        output.scrollTop = output.scrollHeight;
+        setTimeout(step, 18);
+      } else {
+        output.textContent += '\n';
+        output.scrollTop = output.scrollHeight;
+        if(cb) cb();
       }
-      passo();
     }
+    step();
+  }
 
-    function processarComando(cmd) {
-      cmd = cmd.trim().toUpperCase();
-      escreveTexto(`root@fsociety:~$ ${cmd}`);
-
-      if(cmd === "NMAP"){
+  // Processa comandos
+  function processarComando(raw){
+    const cmd = String(raw).trim().toUpperCase();
+    if(!cmd) return;
+    escreveTexto(`root@fsociety:~$ ${cmd}`);
+    switch(cmd){
+      case 'NMAP':
         escreveTexto("Starting Nmap 7.91 ( https://nmap.org ) at 2025-06-19 23:00");
         escreveTexto("Nmap scan report for 192.168.1.1");
         escreveTexto("Host is up (0.0020s latency).");
@@ -232,106 +184,79 @@
         escreveTexto("80/tcp   open  http");
         escreveTexto("MAC Address: 00:0C:29:68:22:33 (VMware)");
         escreveTexto("Nmap done: 1 IP address (1 host up) scanned in 0.42 seconds");
-      }
-      else if(cmd === "HELP"){
+        break;
+      case 'HELP':
         escreveTexto("Comandos disponíveis: NMAP, HELP, CLEAR, EXIT");
-      }
-      else if(cmd === "CLEAR"){
-        output.textContent = "";
-      }
-      else if(cmd === "EXIT"){
+        break;
+      case 'CLEAR':
+        output.textContent = '';
+        break;
+      case 'EXIT':
         escreveTexto("Saindo do terminal...");
-        setTimeout(() => {
-          ativarCamuflagem();
-          commandInput.value = "";
-        }, 1000);
-      }
-      else {
+        setTimeout(ativarCamuflagem, 700);
+        break;
+      default:
         escreveTexto(`Comando não reconhecido: ${cmd}`);
-      }
     }
+  }
 
-    commandInput.addEventListener("keydown", function(e){
-      if(e.key === "Enter"){
-        e.preventDefault();
-        const comando = commandInput.value;
-        if(comando.trim() !== ""){
-          processarComando(comando);
-          commandInput.value = "";
-        }
-      }
-    });
-
-    function ativarCamuflagem() {
-      document.body.style.backgroundColor = "#000";
-      videoContainer.style.display = "none";
-      terminal.style.display = "none";
-      camuflagem.style.display = "block";
+  input.addEventListener('keydown', e => {
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      const val = input.value;
+      if(val.trim()) processarComando(val);
+      input.value = '';
     }
+  });
 
-    function desativarCamuflagem() {
-      document.body.style.backgroundColor = "";
-      camuflagem.style.display = "none";
-      videoContainer.style.display = "flex";
-      terminal.style.display = "flex";
-      commandInput.focus();
+  // Função para ativar camuflagem (esconder terminal, vídeo e mascote)
+  function ativarCamuflagem(){
+    // esconder elementos "sensíveis"
+    terminal.style.display = 'none';
+    videoContainer.style.display = 'none';
+    mascote.style.display = 'none'; // <-- a caveira some aqui
+
+    // mostrar camuflagem fullscreen e botão voltar discreto
+    camuflagem.style.display = 'block';
+    botaoVoltar.style.display = 'block';
+    botaoVoltar.focus();
+
+    // acessibilidade / aria
+    camuflagem.setAttribute('aria-hidden','false');
+    botaoVoltar.setAttribute('aria-hidden','false');
+  }
+
+  // Função para desativar camuflagem (voltar ao normal e retornar mascote)
+  function desativarCamuflagem(){
+    camuflagem.style.display = 'none';
+    botaoVoltar.style.display = 'none';
+
+    // restaurar elementos
+    terminal.style.display = 'flex';
+    videoContainer.style.display = 'flex';
+    mascote.style.display = 'block'; // <-- a caveira reaparece
+
+    // foco no input do terminal
+    input.focus();
+
+    // acessibilidade / aria
+    camuflagem.setAttribute('aria-hidden','true');
+    botaoVoltar.setAttribute('aria-hidden','true');
+  }
+
+  // Liga os botões
+  botaoCamuflagem.addEventListener('click', ativarCamuflagem);
+  botaoVoltar.addEventListener('click', desativarCamuflagem);
+
+  // Efeito extra: fechar camuflagem com ESC
+  window.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && camuflagem.style.display === 'block'){
+      desativarCamuflagem();
     }
+  });
 
-    // Mascote animado flutuante (💀) com efeito glitch nas bordas
-    const mascote = document.getElementById("mascote");
-
-    let x = 50;
-    let y = 50;
-    let dx = 2;
-    let dy = 1.5;
-    let efeitoAtivo = false;
-
-    function piscarGlitch() {
-      if (efeitoAtivo) return;
-      efeitoAtivo = true;
-
-      let pisca = 0;
-      const piscarInterval = setInterval(() => {
-        mascote.style.color = pisca % 2 === 0 ? 'red' : 'white';
-        pisca++;
-        if (pisca > 5) {
-          clearInterval(piscarInterval);
-          mascote.style.color = '#00ffcc';
-          efeitoAtivo = false;
-        }
-      }, 50);
-    }
-
-    function moverMascote() {
-      const largura = window.innerWidth;
-      const altura = window.innerHeight;
-
-      x += dx;
-      y += dy;
-
-      let bateuBorda = false;
-
-      if (x + 48 >= largura || x <= 0) {
-        dx *= -1;
-        bateuBorda = true;
-      }
-      if (y + 48 >= altura || y <= 0) {
-        dy *= -1;
-        bateuBorda = true;
-      }
-
-      if (bateuBorda) piscarGlitch();
-
-      mascote.style.left = x + "px";
-      mascote.style.top = y + "px";
-
-      mascote.style.transform = `scaleX(${dx > 0 ? 1 : -1})`;
-
-      requestAnimationFrame(moverMascote);
-    }
-
-    moverMascote();
-    window.onload = () => commandInput.focus();
-  </script>
+  // Mantém foco no input ao carregar
+  window.addEventListener('load', () => input.focus());
+</script>
 </body>
 </html>
