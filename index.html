@@ -200,6 +200,7 @@
     const commandInput = document.getElementById('command-input');
     const videoContainer = document.getElementById('videoContainer');
     const camuflagem = document.getElementById('camuflagem');
+    const mascote = document.getElementById("mascote");
 
     function escreveTexto(text, callback) {
       let i = 0;
@@ -263,28 +264,22 @@
     });
 
     function ativarCamuflagem() {
-      document.body.style.backgroundColor = "#000";
-      videoContainer.style.display = "none";
       terminal.style.display = "none";
-      camuflagem.style.display = "block";
+      videoContainer.style.display = "none";
+      mascote.style.display = "none"; // 💀 some
+      camuflagem.style.display = "block"; // FUTURO.webp aparece
     }
 
     function desativarCamuflagem() {
-      document.body.style.backgroundColor = "";
       camuflagem.style.display = "none";
-      videoContainer.style.display = "flex";
       terminal.style.display = "flex";
+      videoContainer.style.display = "flex";
+      mascote.style.display = "block"; // 💀 volta
       commandInput.focus();
     }
 
     // Mascote animado flutuante (💀) com efeito glitch nas bordas
-    const mascote = document.getElementById("mascote");
-
-    let x = 50;
-    let y = 50;
-    let dx = 2;
-    let dy = 1.5;
-    let efeitoAtivo = false;
+    let x = 50, y = 50, dx = 2, dy = 1.5, efeitoAtivo = false;
 
     function piscarGlitch() {
       if (efeitoAtivo) return;
@@ -324,7 +319,6 @@
 
       mascote.style.left = x + "px";
       mascote.style.top = y + "px";
-
       mascote.style.transform = `scaleX(${dx > 0 ? 1 : -1})`;
 
       requestAnimationFrame(moverMascote);
